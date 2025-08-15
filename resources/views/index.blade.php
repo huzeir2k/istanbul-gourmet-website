@@ -56,9 +56,9 @@
         <div class="mb-4">
             <h4>Sponsored Brands include:</h4>
             <div class="d-flex justify-content-between align-items-center">
-                <img src="brand1.jpg" alt="Brand 1" class="img-fluid brand-logo">
-                <img src="brand2.jpg" alt="Brand 2" class="img-fluid brand-logo">
-                <img src="brand3.jpg" alt="Brand 3" class="img-fluid brand-logo">
+                <img src="#" alt="Brand 1" class="img-fluid brand-logo">
+                <img src="#" alt="Brand 2" class="img-fluid brand-logo">
+                <img src="#" alt="Brand 3" class="img-fluid brand-logo">
                 <!-- Add more brand images as needed -->
             </div>
         </div>
