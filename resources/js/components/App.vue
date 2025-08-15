@@ -14,6 +14,7 @@
 
 <script>
 import { defineAsyncComponent } from 'vue';
+import { asset } from '@/helpers/assets';
 
 export default {
   components: {
