@@ -1,217 +1,155 @@
 <template>
-  <div class="home-container">
+  <div class="home-page">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Istanbul Gourmet Market</h1>
+        <p>Authentic Turkish & Mediterranean Flavors</p>
+        <button @click="navigateTo('/shop')" class="cta-button">
+          Explore Our Shop
+        </button>
+      </div>
+    </section>
+
+    <!-- What's New Section -->
+    <section class="whats-new">
+      <div class="container">
+        <h2>What's New</h2>
+        <p class="section-subtitle">Freshly arrived items this week</p>
+        
+        <!-- Loading State -->
+        <div v-if="loading" class="loading">
+          <p>Loading new products...</p>
+        </div>
+
+        <!-- New Products Grid -->
+        <div v-else-if="newProducts.length > 0" class="product-grid">
+          <div v-for="product in newProducts" :key="product.id" class="product-card">
+            <div class="product-image">
+              <img :src="getImageUrl(product)" :alt="product.name" />
+            </div>
+            <div class="product-info">
+              <h3>{{ product.name }}</h3>
+              <p class="description">{{ product.short_description }}</p>
+              <div class="price-row">
+                <span class="price">CAD${{ product.price_with_tax }} (after tax)</span>
+              </div>
+              <button @click="viewProduct(product.id)" class="btn-secondary">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="error" class="error-message">
+          <p>{{ error }}</p>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else class="empty-state">
+          <p>No new products at the moment. Check back soon!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Google Maps Location Section -->
+    <section class="location">
+      <div class="container">
+        <h2>Our Location</h2>
+        <p class="section-subtitle">Visit us in Windsor, Ontario</p>
+        
+        <div class="map-container">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2946.8894844445776!2d-82.9454712!3d42.3119234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x883b2b6a4382947b:0xc8468b6ed42aef04!2sIstanbul+Gourmet+Market!5e0!3m2!1sen!2sca!4v1234567890"
+            width="100%"
+            height="400"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+
+        <div class="location-info">
+          <h3>Tecumseh Road Location</h3>
+          <p><strong>Address:</strong> Tecumseh Road, Windsor, Ontario, Canada</p>
+          <p><strong>Hours:</strong> Mon-Sat 10am - 8pm, Sun 11am - 6pm</p>
+          <p><strong>Phone:</strong> <a href="tel:+12262209492">(226) 220-9492</a></p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
 export default {
-  components: {
-    Header: () => import('./Header.vue'),
-    Footer: () => import('./Footer.vue')
-  },
-  name: "Home",
+  name: 'HomePage',
   data() {
     return {
-      activeIndex: 0,
-      searchQuery: "",
-      carouselProducts: [
-        { name: "Product 1", image: "/images/product1.jpg" },
-        { name: "Product 2", image: "/images/product2.jpg" },
-        { name: "Product 3", image: "/images/product3.jpg" },
-      ],
-      products: [
-        { id: 1, name: "Apple", price: 12.99, image: "/images/product1.jpg" },
-        { id: 2, name: "Banana", price: 9.99, image: "/images/product2.jpg" },
-        { id: 3, name: "Cherry", price: 15.99, image: "/images/product3.jpg" },
-        { id: 4, name: "Date", price: 7.5, image: "/images/product1.jpg" },
-        { id: 5, name: "Eggplant", price: 11.0, image: "/images/product2.jpg" },
-      ],
-      googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2886.123456!2d-83.032!3d42.314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x883b8b123456789:0xabcdef123456!2sYour+Shop+Name!5e0!3m2!1sen!2sca!4v1699999999999"
+      newProducts: [],
+      loading: false,
+      error: null,
     };
   },
-  computed: {
-    filteredProducts() {
-      if (!this.searchQuery) return this.products;
-      return this.products.filter((p) =>
-        p.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    },
+  mounted() {
+    this.fetchNewProducts();
   },
   methods: {
-    nextSlide() {
-      this.activeIndex =
-        (this.activeIndex + 1) % this.carouselProducts.length;
+    /**
+     * Fetch the 6 most recently added products from the API
+     * Sorts by created_at in descending order to show newest first
+     */
+    async fetchNewProducts() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await window.axios.get('/api/products', {
+          params: {
+            per_page: 6,
+            sort_by: 'created_at',
+            sort_order: 'desc',
+          },
+        });
+
+        // Extract products from paginated response (Laravel API returns data in .data)
+        this.newProducts = response.data.data || [];
+      } catch (err) {
+        console.error('Error fetching new products:', err);
+        this.error = 'Failed to load new products. Please try again later.';
+      } finally {
+        this.loading = false;
+      }
     },
-    prevSlide() {
-      this.activeIndex =
-        (this.activeIndex - 1 + this.carouselProducts.length) %
-        this.carouselProducts.length;
+
+    /**
+     * Get image URL for a product with fallback to placeholder
+     * If product has image path, prepend /storage/ prefix
+     * Otherwise show SVG placeholder
+     */
+    getImageUrl(product) {
+      if (product.image) {
+        return `/storage/${product.image}`;
+      }
+      // SVG placeholder when no image available
+      return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect fill="%23ddd" width="300" height="300"/%3E%3Ctext fill="%23999" font-size="16" x="50%" y="50%" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
     },
-  },
-  mounted() {
-    // Simple auto-slide every 3 seconds
-    setInterval(() => {
-      this.nextSlide();
-    }, 3000);
+
+    /**
+     * Navigate to product detail page
+     */
+    viewProduct(productId) {
+      window.location.href = `/products/${productId}`;
+    },
+
+    /**
+     * Navigate to a specified route
+     */
+    navigateTo(route) {
+      window.location.href = route;
+    },
   },
 };
 </script>
-
-<style scoped>
-/* General */
-.home-container {
-  background-color: #FFF; /* Background */
-  color: #54545c; /* Lettering */
-  font-family: 'Arial', sans-serif;
-}
-
-/* Carousel */
-.carousel-section {
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 2rem;
-  border-radius: 12px;
-}
-
-.carousel {
-  display: flex;
-  position: relative;
-  align-items: center;
-}
-
-.carousel-item {
-  min-width: 100%;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 12px;
-}
-
-.carousel-item.active {
-  opacity: 1;
-  position: relative;
-}
-
-.carousel-item img {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-.carousel-caption {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  color: #FFF;
-  font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
-}
-
-.carousel button.prev,
-.carousel button.next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #f31e45; /* Primary accent */
-  color: #FFF;
-  border: none;
-  font-size: 2rem;
-  padding: 0 0.5rem;
-  cursor: pointer;
-  z-index: 10;
-  border-radius: 50%;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
-
-.carousel button.prev:hover,
-.carousel button.next:hover {
-  opacity: 1;
-}
-
-.carousel button.prev { left: 1rem; }
-.carousel button.next { right: 1rem; }
-
-/* Products Section */
-.products-section {
-  padding: 2rem 0;
-}
-
-.search-bar {
-  width: 100%;
-  padding: 0.7rem 1rem;
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-  border: 2px solid #44c4d4; /* Secondary accent */
-  border-radius: 8px;
-  outline: none;
-  transition: border 0.2s ease;
-}
-
-.search-bar:focus {
-  border-color: #f31e45; /* Primary accent */
-}
-
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-}
-
-.product-card {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  text-align: center;
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  background-color: #FFF;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
-
-.product-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  margin-bottom: 0.7rem;
-  border-radius: 8px;
-}
-
-.product-card h3 {
-  color: #54545c; /* Lettering */
-  font-size: 1.1rem;
-  margin-bottom: 0.3rem;
-}
-
-.product-card p {
-  color: #f31e45; /* Primary accent for price */
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-/* Map Section */
-.map-section {
-  margin-top: 3rem;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 2px solid #44c4d4; /* Secondary accent border */
-}
-
-/* Optional: Make map responsive */
-.map-section iframe {
-  width: 100%;
-  height: 400px;
-  border: 0;
-  border-radius: 12px;
-}
-</style>
 

@@ -1,0 +1,251 @@
+/* AboutPage.vue Styles */
+
+.about-page {
+  min-height: 100vh;
+  background-color: var(--color-light-bg);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  padding: 80px 2rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.hero p {
+  font-size: 1.3rem;
+  opacity: 0.9;
+}
+
+/* History Section */
+.history {
+  padding: 80px 0;
+  background-color: white;
+}
+
+.history h2 {
+  font-size: 2.5rem;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.timeline {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.timeline-item {
+  display: flex;
+  margin-bottom: 3rem;
+  gap: 2rem;
+}
+
+.timeline-marker {
+  flex-shrink: 0;
+  width: 120px;
+  height: 80px;
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.timeline-content h3 {
+  font-size: 1.4rem;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-content p {
+  color: #888;
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+/* Highlights Section */
+.highlights {
+  padding: 80px 0;
+  background-color: var(--color-light-bg);
+}
+
+.highlights h2 {
+  font-size: 2.5rem;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.highlight-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.highlight-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.highlight-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.highlight-card h3 {
+  font-size: 1.3rem;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.highlight-card p {
+  color: #888;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Key Facts */
+.key-facts {
+  padding: 80px 0;
+  background-color: white;
+}
+
+.key-facts h2 {
+  font-size: 2.5rem;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.fact-box {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent-light) 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.fact-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(68, 196, 212, 0.3);
+}
+
+.fact-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.fact-label {
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+/* CTA Section */
+.cta {
+  background: linear-gradient(135deg, var(--color-text) 0%, #333 100%);
+  color: white;
+  padding: 80px 2rem;
+  text-align: center;
+}
+
+.cta h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cta p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(243, 30, 69, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .history h2,
+  .highlights h2,
+  .key-facts h2,
+  .cta h2 {
+    font-size: 2rem;
+  }
+
+  .timeline-item {
+    flex-direction: column;
+  }
+
+  .timeline-marker {
+    width: 100%;
+  }
+
+  .highlights-grid,
+  .facts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history,
+  .highlights,
+  .key-facts,
+  .cta {
+    padding: 60px 0;
+  }
+}

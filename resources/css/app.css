@@ -1,3 +1,71 @@
+/* Import component styles first */
+@import './accessibility.css';
+@import './responsive.css';
+@import './home-page.css';
+@import './shop-page.css';
+@import './about-page.css';
+@import './contact-page.css';
+@import './product-detail.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global CSS Variables for Theme System */
+:root {
+  /* Brand Colors - Day Theme (Updated at runtime by themeService.js) */
+  --color-primary: #f31e45;
+  --color-secondary: #44c4d4;
+  --color-background: #ffffff;
+  --color-text: #54545c;
+  --color-light-bg: #f5f5f5;
+  --color-border: #e0e0e0;
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --color-accent-dark: #c91433;
+  --color-accent-light: #2eaaba;
+
+  /* Transition duration for theme changes */
+  --theme-transition: 1s ease;
+}
+
+/* Global Styles with Theme Variables */
+body {
+  color: var(--color-text);
+  background-color: var(--color-background);
+  transition: background-color var(--theme-transition), color var(--theme-transition);
+}
+
+a {
+  color: var(--color-primary);
+  transition: color var(--theme-transition);
+}
+
+a:hover {
+  color: var(--color-accent-dark);
+}
+
+button, input[type="button"], input[type="submit"] {
+  transition: background-color var(--theme-transition), color var(--theme-transition), border-color var(--theme-transition);
+}
+
+/* Accessibility: Focus states */
+a:focus, button:focus, input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  :root {
+    --color-shadow: rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
